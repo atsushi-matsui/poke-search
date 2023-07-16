@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>検索窓</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+  <input id="searchInput" type="text" placeholder="検索キーワード">
+  <button id="searchButton">検索</button>
+  <ul id="resultsList"></ul>
+
+  <script>
+    $(document).ready(function() {
+      $('#searchButton').click(function() {
+        var searchTerm = $('#searchInput').val();
+
+        $.ajax({
+          url: 'http://localhost:8081/search?keyword=' + searchTerm,
+          method: 'GET',
+          success: function(response) {
+            displayResults(response);
+          },
+          error: function() {
+            console.log('エラーが発生しました');
+          }
+        });
+      });
+
+      function displayResults(results) {
+        var resultList = $('#resultsList');
+        resultList.empty();
+
+        if (results.length === 0) {
+          resultList.append('<li>結果が見つかりませんでした</li>');
+        } else {
+          for (var i = 0; i < results.length; i++) {
+            var resultItem = '<li>' + results[i].id + ' - ' + results[i].name + ' - ' + results[i].score + '</li>';
+            resultList.append(resultItem);
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
